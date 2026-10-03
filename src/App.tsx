@@ -19,6 +19,7 @@ import {
   getRemainingDigitCounts,
   getSmartHint,
   isBoardSolved,
+  isCellCorrect,
   stringToBoard,
 } from './utils/sudokuSolver';
 import { sound } from './utils/sound';
@@ -196,8 +197,8 @@ export const App: React.FC = () => {
   const dailyCompletedToday = Boolean(dailyProgressList[todayStr]?.completed);
 
   // Dynamic conflicts & remaining digit counts
-  const conflicts = settings.highlightDuplicates ? getConflicts(currentBoard) : new Set<string>();
-  const remainingCounts = getRemainingDigitCounts(currentBoard);
+  const conflicts = getConflicts(currentBoard, solution, settings.highlightDuplicates);
+  const remainingCounts = getRemainingDigitCounts(currentBoard, solution);
 
   // Active Game state to pass to HomeScreen (Section 15)
   const activeGameState: GameState | null =
@@ -571,7 +572,7 @@ export const App: React.FC = () => {
     } else {
       if (prevVal === num) return;
 
-      const isCorrect = solution[row][col] === num;
+      const isCorrect = isCellCorrect(solution, row, col, num);
       if (!isCorrect) {
         setMistakes((prev) => prev + 1);
         sound.playMistake();

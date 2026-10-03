@@ -21,6 +21,7 @@ import {
   getRemainingDigitCounts,
   getSmartHint,
   isBoardSolved,
+  isCellCorrect,
   stringToBoard,
 } from '../utils/sudokuSolver';
 import { sound } from '../utils/sound';
@@ -114,8 +115,8 @@ export const GYChallengeView: React.FC<GYChallengeViewProps> = ({
     return () => clearInterval(interval);
   }, [countdownSeconds, isPaused, isGameOver, isVictory, isMathModalOpen]);
 
-  const conflicts = getConflicts(currentBoard);
-  const remainingCounts = getRemainingDigitCounts(currentBoard);
+  const conflicts = getConflicts(currentBoard, solution);
+  const remainingCounts = getRemainingDigitCounts(currentBoard, solution);
 
   const handleSelectCell = (row: number, col: number) => {
     setSelectedCell({ row, col });
@@ -165,7 +166,7 @@ export const GYChallengeView: React.FC<GYChallengeViewProps> = ({
     } else {
       if (prevVal === num) return;
 
-      const isCorrect = solution[row][col] === num;
+      const isCorrect = isCellCorrect(solution, row, col, num);
       if (!isCorrect) {
         const newMistakes = mistakes + 1;
         setMistakes(newMistakes);

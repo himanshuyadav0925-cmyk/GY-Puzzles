@@ -11,7 +11,7 @@ if (typeof globalThis.localStorage === 'undefined') {
   };
 }
 
-import { loadAllLevelProgress, recordCompletionStats, DEFAULT_STATS } from '../src/utils/storage';
+import { loadAllLevelProgress, recordCompletionStats } from '../src/utils/storage';
 import { VERIFIED_PUZZLES } from '../src/data/puzzles';
 
 console.log('=== GY PUZZLES APP FEATURE & PROGRESSION TEST ===\n');
@@ -30,6 +30,10 @@ starterLevels.forEach((id) => {
     console.log(`✅ PASSED: Level ${id} (${puzzle?.difficulty}) initialized and unlocked`);
   }
 });
+
+if (startersOk) {
+  console.log('✅ PASSED: All benchmark starter levels initialized');
+}
 
 // 2. Test recordCompletionStats with lifelines
 console.log('\n--- 2. Testing Stats Recording with Lifelines ---');

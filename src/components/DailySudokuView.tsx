@@ -19,6 +19,7 @@ import {
   getRemainingDigitCounts,
   getSmartHint,
   isBoardSolved,
+  isCellCorrect,
   stringToBoard,
 } from '../utils/sudokuSolver';
 import {
@@ -206,8 +207,8 @@ export const DailySudokuView: React.FC<DailySudokuViewProps> = ({
     return () => clearInterval(interval);
   }, [isPaused, isCompleted, isMathModalOpen, alreadyCompletedToday]);
 
-  const conflicts = getConflicts(currentBoard);
-  const remainingCounts = getRemainingDigitCounts(currentBoard);
+  const conflicts = getConflicts(currentBoard, solution);
+  const remainingCounts = getRemainingDigitCounts(currentBoard, solution);
 
   const handleSelectCell = (row: number, col: number) => {
     setSelectedCell({ row, col });
@@ -367,10 +368,11 @@ export const DailySudokuView: React.FC<DailySudokuViewProps> = ({
     } else {
       if (prevVal === num) return;
 
-      const isCorrect = solution[row][col] === num;
+      const isCorrect = isCellCorrect(solution, row, col, num);
       if (!isCorrect) {
         setMistakes((prev) => prev + 1);
         sound.playMistake();
+        voice.speakConflict();
       } else {
         sound.playNumberPlace();
       }

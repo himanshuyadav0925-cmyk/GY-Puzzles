@@ -67,60 +67,90 @@ export function isValidPlacement(
   return true;
 }
 
-// Find all cells that currently have conflicting duplicates in row, column, or 3x3 box
-export function getConflicts(board: BoardGrid): Set<string> {
+// Check whether placing num at (row, col) matches the actual puzzle solution
+export function isCellCorrect(
+  solution: BoardGrid,
+  row: number,
+  col: number,
+  num: number
+): boolean {
+  return solution[row][col] === num;
+}
+
+// Find all cells that currently have conflicting duplicates in row, column, or 3x3 box,
+// or that differ from the puzzle's actual solution when provided.
+export function getConflicts(
+  board: BoardGrid,
+  solution?: BoardGrid,
+  checkDuplicates: boolean = true
+): Set<string> {
   const conflicts = new Set<string>();
 
-  // Check rows
-  for (let r = 0; r < 9; r++) {
-    const seen = new Map<number, number[]>();
-    for (let c = 0; c < 9; c++) {
-      const val = board[r][c];
-      if (val !== null) {
-        if (!seen.has(val)) seen.set(val, []);
-        seen.get(val)!.push(c);
-      }
-    }
-    for (const [, cols] of seen) {
-      if (cols.length > 1) {
-        cols.forEach((col) => conflicts.add(`${r},${col}`));
-      }
-    }
-  }
-
-  // Check columns
-  for (let c = 0; c < 9; c++) {
-    const seen = new Map<number, number[]>();
+  // Check duplicate violations in rows, columns, and 3x3 boxes if enabled
+  if (checkDuplicates) {
+    // Check rows
     for (let r = 0; r < 9; r++) {
-      const val = board[r][c];
-      if (val !== null) {
-        if (!seen.has(val)) seen.set(val, []);
-        seen.get(val)!.push(r);
+      const seen = new Map<number, number[]>();
+      for (let c = 0; c < 9; c++) {
+        const val = board[r][c];
+        if (val !== null) {
+          if (!seen.has(val)) seen.set(val, []);
+          seen.get(val)!.push(c);
+        }
+      }
+      for (const [, cols] of seen) {
+        if (cols.length > 1) {
+          cols.forEach((col) => conflicts.add(`${r},${col}`));
+        }
       }
     }
-    for (const [, rows] of seen) {
-      if (rows.length > 1) {
-        rows.forEach((row) => conflicts.add(`${row},${c}`));
-      }
-    }
-  }
 
-  // Check 3x3 boxes
-  for (let boxRow = 0; boxRow < 3; boxRow++) {
-    for (let boxCol = 0; boxCol < 3; boxCol++) {
-      const seen = new Map<number, CellPosition[]>();
-      for (let r = boxRow * 3; r < boxRow * 3 + 3; r++) {
-        for (let c = boxCol * 3; c < boxCol * 3 + 3; c++) {
-          const val = board[r][c];
-          if (val !== null) {
-            if (!seen.has(val)) seen.set(val, []);
-            seen.get(val)!.push({ row: r, col: c });
+    // Check columns
+    for (let c = 0; c < 9; c++) {
+      const seen = new Map<number, number[]>();
+      for (let r = 0; r < 9; r++) {
+        const val = board[r][c];
+        if (val !== null) {
+          if (!seen.has(val)) seen.set(val, []);
+          seen.get(val)!.push(r);
+        }
+      }
+      for (const [, rows] of seen) {
+        if (rows.length > 1) {
+          rows.forEach((row) => conflicts.add(`${row},${c}`));
+        }
+      }
+    }
+
+    // Check 3x3 boxes
+    for (let boxRow = 0; boxRow < 3; boxRow++) {
+      for (let boxCol = 0; boxCol < 3; boxCol++) {
+        const seen = new Map<number, CellPosition[]>();
+        for (let r = boxRow * 3; r < boxRow * 3 + 3; r++) {
+          for (let c = boxCol * 3; c < boxCol * 3 + 3; c++) {
+            const val = board[r][c];
+            if (val !== null) {
+              if (!seen.has(val)) seen.set(val, []);
+              seen.get(val)!.push({ row: r, col: c });
+            }
+          }
+        }
+        for (const [, cells] of seen) {
+          if (cells.length > 1) {
+            cells.forEach((pos) => conflicts.add(`${pos.row},${pos.col}`));
           }
         }
       }
-      for (const [, cells] of seen) {
-        if (cells.length > 1) {
-          cells.forEach((pos) => conflicts.add(`${pos.row},${pos.col}`));
+    }
+  }
+
+  // Compare against solution if provided: any non-null cell differing from solution is marked
+  if (solution) {
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const val = board[r][c];
+        if (val !== null && val !== solution[r][c]) {
+          conflicts.add(`${r},${c}`);
         }
       }
     }
@@ -229,7 +259,10 @@ export function isBoardSolved(board: BoardGrid, solution: BoardGrid): boolean {
 }
 
 // Count remaining unplaced numbers for 1 through 9
-export function getRemainingDigitCounts(board: BoardGrid): Record<number, number> {
+export function getRemainingDigitCounts(
+  board: BoardGrid,
+  solution?: BoardGrid
+): Record<number, number> {
   const counts: Record<number, number> = {
     1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9
   };
@@ -238,7 +271,10 @@ export function getRemainingDigitCounts(board: BoardGrid): Record<number, number
     for (let c = 0; c < 9; c++) {
       const val = board[r][c];
       if (val !== null && counts[val] !== undefined) {
-        counts[val]--;
+        // Only decrement count if the placed number is correct according to the solution
+        if (!solution || val === solution[r][c]) {
+          counts[val]--;
+        }
       }
     }
   }
@@ -263,6 +299,22 @@ export function getSmartHint(
         value: val,
         explanation: `Cell (${row + 1}, ${col + 1}) must be ${val}.`
       };
+    }
+  }
+
+  // Prioritize correcting any incorrect cell on the board
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const val = currentBoard[r][c];
+      if (val !== null && val !== solution[r][c]) {
+        const correctVal = solution[r][c] as number;
+        return {
+          row: r,
+          col: c,
+          value: correctVal,
+          explanation: `Correction: Cell (${r + 1}, ${c + 1}) was incorrect. The correct number is ${correctVal}.`
+        };
+      }
     }
   }
 

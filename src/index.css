@@ -901,6 +901,9 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .daily-view-header {
@@ -956,6 +959,8 @@ button:focus-visible {
 .daily-stage-wrapper {
   display: flex;
   justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* =========================================================
@@ -1486,7 +1491,7 @@ button:focus-visible {
 
 .game-stage-card {
   width: 100%;
-  max-width: 550px;
+  max-width: 560px;
   background: var(--surface-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -1505,9 +1510,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  row-gap: 8px;
-  column-gap: 6px;
+  flex-wrap: nowrap;
+  gap: 8px;
   width: 100%;
   box-sizing: border-box;
   padding-bottom: 12px;
@@ -1518,7 +1522,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   min-width: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 
 .level-badge-btn {
@@ -1667,16 +1671,19 @@ button:focus-visible {
 .header-tools-group {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .tool-btn {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   padding: 0;
   border-radius: 8px;
   display: flex;
@@ -1684,6 +1691,9 @@ button:focus-visible {
   justify-content: center;
   transition: all 0.15s ease;
   box-sizing: border-box;
+  flex-shrink: 0;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .tool-btn svg {
@@ -3452,7 +3462,7 @@ button:focus-visible {
    MOBILE RESPONSIVE COMPREHENSIVE REFINEMENTS (SECTION 13)
    Tested at 320px, 360px, 375px, 390px, 412px, 768px
    ========================================================= */
-@media (max-width: 560px) {
+@media (max-width: 640px) {
   .game-stage-card {
     padding: 12px 10px;
     border-radius: 18px;
@@ -3472,13 +3482,38 @@ button:focus-visible {
   .header-meta-group {
     order: 1;
     min-width: 0;
+    max-width: calc(100% - 74px);
     flex-shrink: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .level-badge-btn {
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .level-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .header-tools-group {
     order: 2;
     margin-left: auto;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tool-btn {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
   }
 
   .header-stats-group {
@@ -3541,6 +3576,10 @@ button:focus-visible {
     padding: 0 0 10px 0;
     gap: 8px 6px;
     width: 100%;
+  }
+
+  .header-meta-group {
+    max-width: calc(100% - 70px);
   }
 
   .sudoku-board-container {
@@ -3613,6 +3652,10 @@ button:focus-visible {
     font-size: 1.8rem;
   }
 
+  .daily-view-container {
+    padding: 12px 6px 36px;
+  }
+
   .game-stage {
     padding: 6px 4px 14px;
   }
@@ -3626,6 +3669,14 @@ button:focus-visible {
   .game-header-bar {
     padding: 0 0 8px 0;
     gap: 6px 4px;
+  }
+
+  .header-meta-group {
+    max-width: calc(100% - 66px);
+  }
+
+  .header-tools-group {
+    gap: 4px;
   }
 
   .level-badge-btn {
@@ -3651,6 +3702,8 @@ button:focus-visible {
   .tool-btn {
     width: 28px;
     height: 28px;
+    min-width: 28px;
+    min-height: 28px;
   }
 
   .tool-btn svg {
