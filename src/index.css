@@ -96,9 +96,11 @@ button:focus-visible {
   flex-direction: column;
   position: relative;
   padding-bottom: 64px; /* Space for mobile bottom bar */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .gy-app-root {
     padding-bottom: 0;
   }
@@ -197,7 +199,7 @@ button:focus-visible {
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .desktop-nav-only {
     display: flex;
   }
@@ -268,7 +270,7 @@ button:focus-visible {
   padding: 0 4px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .mobile-bottom-bar {
     display: none;
   }
@@ -1477,46 +1479,59 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   padding: 16px 12px 32px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .game-stage-card {
   width: 100%;
-  max-width: 520px;
+  max-width: 550px;
   background: var(--surface-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--surface-card-border);
   border-radius: 24px;
-  padding: 18px;
+  padding: 16px;
   box-shadow: var(--shadow-lg), var(--shadow-gold);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .game-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 8px;
+  column-gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  gap: 10px;
 }
 
 .header-meta-group {
   display: flex;
   align-items: center;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .level-badge-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 6px 12px;
-  border-radius: 12px;
+  padding: 4px 7px;
+  border-radius: 10px;
   color: #ffffff;
+  min-width: 0;
+  transition: all 0.15s ease;
 }
 
 .level-badge-btn:hover {
@@ -1526,16 +1541,18 @@ button:focus-visible {
 
 .level-label {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.84rem;
+  white-space: nowrap;
 }
 
 .diff-pill {
-  font-size: 0.72rem;
+  font-size: 0.67rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 8px;
-  border-radius: 6px;
+  letter-spacing: 0.3px;
+  padding: 2px 5px;
+  border-radius: 5px;
+  white-space: nowrap;
 }
 
 .diff-beginner { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
@@ -1547,22 +1564,25 @@ button:focus-visible {
 .header-stats-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .header-stat-box {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 5px 10px;
-  border-radius: 10px;
-  font-size: 0.82rem;
+  padding: 3px 6px;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  box-sizing: border-box;
 }
 
 .timer-box {
-  min-width: 86px;
+  min-width: 66px;
   justify-content: center;
 }
 
@@ -1570,24 +1590,28 @@ button:focus-visible {
   color: var(--gold-400);
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .timer-digits {
   font-family: monospace;
-  font-size: 0.95rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: 1px;
+  letter-spacing: 0.3px;
 }
 
 .mistakes-box .stat-label {
   color: var(--text-muted);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .mistakes-box .stat-value {
   font-weight: 700;
+  font-size: 0.8rem;
   color: var(--text-primary);
 }
 
@@ -1598,11 +1622,21 @@ button:focus-visible {
 .lifelines-box {
   color: var(--gold-400);
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.lifelines-box .stat-value {
+  font-size: 0.8rem;
 }
 
 .heart-icon {
   color: #ef4444;
   fill: #ef4444;
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
 }
 
 .lifeline-depleted {
@@ -1614,12 +1648,15 @@ button:focus-visible {
   background: var(--gold-500);
   color: var(--navy-950);
   font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 6px;
+  padding: 2px 4px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   gap: 2px;
-  margin-left: 2px;
+  font-size: 0.72rem;
+  line-height: 1;
+  margin-left: 1px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
 }
 
 .add-lifeline-btn:hover {
@@ -1630,23 +1667,34 @@ button:focus-visible {
 .header-tools-group {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
 .tool-btn {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
-  padding: 6px 8px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.tool-btn svg {
+  width: 15px;
+  height: 15px;
 }
 
 .tool-btn:hover {
   color: var(--gold-400);
   border-color: rgba(229, 184, 66, 0.3);
+  background: rgba(229, 184, 66, 0.1);
 }
 
 /* Sudoku Board Layout */
@@ -1790,8 +1838,10 @@ button:focus-visible {
 /* Action Toolbar */
 .action-toolbar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .action-btn {
@@ -1802,11 +1852,13 @@ button:focus-visible {
   gap: 4px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 4px;
+  padding: 7px 4px;
   border-radius: 12px;
   color: var(--text-secondary);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .action-btn:hover:not(:disabled) {
@@ -1854,8 +1906,10 @@ button:focus-visible {
 .number-pad {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
-  gap: 6px;
+  gap: 5px;
   margin-top: 4px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .num-btn {
@@ -1866,9 +1920,11 @@ button:focus-visible {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  padding: 8px 0;
+  padding: 7px 0;
   color: #ffffff;
   transition: all 0.15s ease;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .num-btn:hover:not(:disabled) {
@@ -1937,7 +1993,9 @@ button:focus-visible {
 .footer-links {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 12px;
 }
 
 .footer-link-btn {
@@ -3394,6 +3452,79 @@ button:focus-visible {
    MOBILE RESPONSIVE COMPREHENSIVE REFINEMENTS (SECTION 13)
    Tested at 320px, 360px, 375px, 390px, 412px, 768px
    ========================================================= */
+@media (max-width: 560px) {
+  .game-stage-card {
+    padding: 12px 10px;
+    border-radius: 18px;
+    gap: 12px;
+  }
+
+  .game-header-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 6px;
+    padding-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .header-meta-group {
+    order: 1;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .header-tools-group {
+    order: 2;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .header-stats-group {
+    order: 3;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    box-sizing: border-box;
+  }
+
+  .header-stat-box {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding: 4px 6px;
+    gap: 4px;
+    font-size: 0.78rem;
+  }
+
+  .timer-box {
+    min-width: 0;
+  }
+
+  .timer-digits {
+    font-size: 0.86rem;
+  }
+
+  .mistakes-box .stat-label {
+    font-size: 0.68rem;
+  }
+
+  .lifelines-box {
+    gap: 3px;
+  }
+
+  .add-lifeline-btn {
+    padding: 2px 4px;
+    font-size: 0.7rem;
+    margin-left: 1px;
+  }
+}
+
 @media (max-width: 480px) {
   html, body {
     overflow-x: hidden;
@@ -3403,33 +3534,13 @@ button:focus-visible {
     padding: 10px 8px;
     border-radius: 16px;
     gap: 10px;
+    width: 100%;
   }
 
   .game-header-bar {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 8px 10px;
-  }
-
-  .header-meta-group {
-    order: 1;
-  }
-
-  .header-tools-group {
-    order: 2;
-    margin-left: auto;
-  }
-
-  .header-stats-group {
-    order: 3;
+    padding: 0 0 10px 0;
+    gap: 8px 6px;
     width: 100%;
-    justify-content: space-between;
-    padding-top: 4px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .header-stat-box {
-    padding: 4px 8px;
   }
 
   .sudoku-board-container {
@@ -3449,21 +3560,24 @@ button:focus-visible {
   }
 
   .action-toolbar {
-    gap: 6px;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 5px;
+    width: 100%;
   }
 
   .action-btn {
-    min-height: 44px;
-    padding: 6px 4px;
+    min-height: 42px;
+    padding: 5px 2px;
   }
 
   .number-pad {
-    gap: 5px;
+    gap: 4px;
+    width: 100%;
   }
 
   .num-btn {
-    min-height: 48px;
-    padding: 6px 0;
+    min-height: 46px;
+    padding: 5px 0;
   }
 
   .num-digit {
@@ -3499,16 +3613,124 @@ button:focus-visible {
     font-size: 1.8rem;
   }
 
+  .game-stage {
+    padding: 6px 4px 14px;
+  }
+
+  .game-stage-card {
+    padding: 8px 6px;
+    border-radius: 14px;
+    gap: 8px;
+  }
+
+  .game-header-bar {
+    padding: 0 0 8px 0;
+    gap: 6px 4px;
+  }
+
+  .level-badge-btn {
+    padding: 3px 6px;
+    gap: 4px;
+  }
+
+  .level-label {
+    font-size: 0.78rem;
+  }
+
+  .diff-pill {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+  }
+
+  .relax-mode-tag {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+    gap: 2px;
+  }
+
+  .tool-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .tool-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .header-stats-group {
+    gap: 4px;
+    padding-top: 4px;
+  }
+
+  .header-stat-box {
+    padding: 3px 3px;
+    gap: 2px;
+  }
+
+  .timer-digits {
+    font-size: 0.78rem;
+    letter-spacing: 0;
+  }
+
+  .mistakes-box .stat-label {
+    font-size: 0.58rem;
+  }
+
+  .mistakes-box .stat-value,
+  .lifelines-box .stat-value {
+    font-size: 0.76rem;
+  }
+
+  .heart-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .add-lifeline-btn {
+    padding: 1px 3px;
+    font-size: 0.65rem;
+  }
+
+  .action-toolbar {
+    grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+    gap: 3px;
+  }
+
+  .action-btn {
+    min-height: 38px;
+    padding: 3px 1px;
+    font-size: 0.58rem;
+  }
+
   .action-btn span {
-    font-size: 0.6rem;
+    font-size: 0.54rem;
+  }
+
+  .action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .number-pad {
+    gap: 3px;
+  }
+
+  .num-btn {
+    min-height: 40px;
+    padding: 3px 0;
   }
 
   .num-digit {
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .num-count {
+    font-size: 0.55rem;
   }
 
   .sudoku-cell {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -3775,16 +3997,17 @@ button:focus-visible {
 .relax-mode-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.72rem;
+  gap: 3px;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 8px;
+  letter-spacing: 0.3px;
+  padding: 2px 6px;
   border-radius: 6px;
   background: rgba(56, 189, 248, 0.2);
   color: #38bdf8;
   border: 1px solid rgba(56, 189, 248, 0.35);
+  white-space: nowrap;
 }
 
 .header-relax-mode .mistakes-box .relax-mistakes {
