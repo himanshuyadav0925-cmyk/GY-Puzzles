@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Home,
   Play,
@@ -11,8 +11,10 @@ import {
   Zap,
   List,
   X,
+  Download,
 } from 'lucide-react';
 import type { ActiveView } from '../types/sudoku';
+import { canPromptInstall, addInstallListener, promptInstallApp } from '../utils/pwa';
 
 interface MobileNavBarProps {
   activeView: ActiveView;
@@ -30,6 +32,13 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   onOpenSettings,
 }) => {
   const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
+  const [canInstall, setCanInstall] = useState<boolean>(() => canPromptInstall());
+
+  useEffect(() => {
+    return addInstallListener((installable) => {
+      setCanInstall(installable);
+    });
+  }, []);
 
   return (
     <>
@@ -114,6 +123,20 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
                 <SettingsIcon size={20} />
                 <span>Settings</span>
               </button>
+
+              {canInstall && (
+                <button
+                  type="button"
+                  className="sheet-item sheet-item-install"
+                  onClick={async () => {
+                    setShowMoreMenu(false);
+                    await promptInstallApp();
+                  }}
+                >
+                  <Download size={20} className="icon-gold" />
+                  <span>Install App</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

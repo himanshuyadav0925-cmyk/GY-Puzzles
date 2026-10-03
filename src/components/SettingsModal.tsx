@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Volume2,
@@ -16,11 +16,15 @@ import {
   ZapOff,
   Feather,
   Compass,
+  Smartphone,
+  Download,
+  CheckCircle2,
 } from 'lucide-react';
 import type { ThemeMode, UserSettings } from '../types/sudoku';
 import { resetAllUserData, saveSettings } from '../utils/storage';
 import { sound } from '../utils/sound';
 import { voice } from '../utils/voice';
+import { isStandalone, canPromptInstall, addInstallListener, promptInstallApp } from '../utils/pwa';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -41,6 +45,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [showConfirmResetAll, setShowConfirmResetAll] = useState<boolean>(false);
   const [showConfirmResetGame, setShowConfirmResetGame] = useState<boolean>(false);
+  const [canInstall, setCanInstall] = useState<boolean>(() => canPromptInstall());
+  const [installed, setInstalled] = useState<boolean>(() => isStandalone());
+
+  useEffect(() => {
+    return addInstallListener((installable) => {
+      setCanInstall(installable);
+      setInstalled(isStandalone());
+    });
+  }, []);
 
   if (!isOpen) return null;
 
@@ -354,7 +367,54 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </div>
 
-          {/* SECTION 4: DATA & GAME MANAGEMENT */}
+          {/* SECTION 4: APP & OFFLINE (PWA) */}
+          <div className="settings-section">
+            <h3 className="settings-section-title">App & Offline</h3>
+            <div className="settings-list">
+              <div className="setting-item">
+                <div className="setting-info">
+                  <div className="setting-title-row">
+                    <Smartphone size={18} />
+                    <span className="setting-name">
+                      {installed ? 'App Installed' : canInstall ? 'Install Web App' : 'Offline Ready'}
+                    </span>
+                  </div>
+                  <p className="setting-desc">
+                    {installed
+                      ? 'Running as an installed standalone app with full offline gameplay.'
+                      : canInstall
+                      ? 'Install GY Puzzles to your home screen for quick access and offline play.'
+                      : 'All 100 levels and game assets are cached and ready for offline play.'}
+                  </p>
+                </div>
+                {canInstall && (
+                  <button
+                    type="button"
+                    className="pwa-install-btn"
+                    onClick={async () => {
+                      const success = await promptInstallApp();
+                      if (success) {
+                        setInstalled(true);
+                        setCanInstall(false);
+                      }
+                    }}
+                    title="Install GY Puzzles to home screen"
+                  >
+                    <Download size={14} />
+                    <span>Install</span>
+                  </button>
+                )}
+                {installed && (
+                  <span className="pwa-installed-badge">
+                    <CheckCircle2 size={15} />
+                    <span>Installed</span>
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 5: DATA & GAME MANAGEMENT */}
           <div className="settings-section">
             <h3 className="settings-section-title">Data Management</h3>
 
