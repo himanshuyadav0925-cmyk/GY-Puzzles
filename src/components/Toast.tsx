@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Sparkles, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 
 export type ToastType = 'success' | 'info' | 'hint' | 'warning';
@@ -12,16 +12,27 @@ export interface ToastMessage {
 interface ToastProps {
   toast: ToastMessage | null;
   onDismiss: () => void;
+  duration?: number;
 }
 
-export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
+export const Toast: React.FC<ToastProps> = ({ toast, onDismiss, duration = 2800 }) => {
+  const onDismissRef = useRef(onDismiss);
+
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
   useEffect(() => {
     if (!toast) return;
+
     const timer = setTimeout(() => {
-      onDismiss();
-    }, 2200);
-    return () => clearTimeout(timer);
-  }, [toast, onDismiss]);
+      onDismissRef.current();
+    }, duration);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [toast, duration]);
 
   if (!toast) return null;
 
@@ -39,7 +50,12 @@ export const Toast: React.FC<ToastProps> = ({ toast, onDismiss }) => {
   };
 
   return (
-    <div className={`gy-toast-container toast-${toast.type || 'info'}`} role="status" aria-live="polite">
+    <div
+      key={toast.id}
+      className={`gy-toast-container toast-${toast.type || 'info'}`}
+      role="status"
+      aria-live="polite"
+    >
       <div className="toast-content">
         {renderIcon()}
         <span className="toast-text">{toast.text}</span>

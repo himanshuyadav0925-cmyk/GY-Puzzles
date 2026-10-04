@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type {
   ActiveView,
   BoardGrid,
@@ -153,9 +153,12 @@ export const App: React.FC = () => {
 
   // Friendly Toast Feedback State (Section 16)
   const [toast, setToast] = useState<ToastMessage | null>(null);
-  const showToast = (text: string, type: ToastType = 'info') => {
+  const showToast = useCallback((text: string, type: ToastType = 'info') => {
     setToast({ id: `${Date.now()}-${Math.random()}`, text, type });
-  };
+  }, []);
+  const handleDismissToast = useCallback(() => {
+    setToast(null);
+  }, []);
 
   // Safe Destructive Action Confirmation State (Section 5)
   const [confirmConfig, setConfirmConfig] = useState<{
@@ -887,7 +890,7 @@ export const App: React.FC = () => {
   return (
     <div className={`gy-app-root ${settings.animationsEnabled ? 'animations-enabled' : 'animations-disabled'}`}>
       {/* Toast Feedback Notification */}
-      <Toast toast={toast} onDismiss={() => setToast(null)} />
+      <Toast toast={toast} onDismiss={handleDismissToast} />
 
       {/* Desktop Brand Navbar */}
       <Navbar
