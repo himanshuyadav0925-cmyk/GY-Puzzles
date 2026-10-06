@@ -2053,6 +2053,39 @@ button:focus-visible {
   color: var(--gold-300);
 }
 
+/* =========================================================
+   MOBILE GAMEPLAY FOOTER VISIBILITY & VERTICAL SPACE FIX
+   Completely hides the website footer on mobile breakpoints
+   when on the Sudoku/gameplay screen to maximize vertical board area.
+   Preserves footer on desktop/tablet and non-gameplay screens.
+   Eliminates unnecessary blank space below the game board.
+   ========================================================= */
+@media (max-width: 768px), (max-height: 520px) and (orientation: landscape) {
+  .gy-footer-gameplay,
+  .is-gameplay-view .gy-footer,
+  .view-play .gy-footer,
+  .view-daily .gy-footer,
+  .view-challenge .gy-footer {
+    display: none !important;
+  }
+
+  .is-gameplay-view .game-stage,
+  .view-play .game-stage {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .view-daily .daily-view-container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .view-challenge .challenge-view-container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
 /* Modals System */
 .modal-backdrop {
   position: fixed;

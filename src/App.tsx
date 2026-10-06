@@ -887,8 +887,14 @@ export const App: React.FC = () => {
     showToast(!muted ? 'Sound enabled' : 'Sound muted', 'info');
   };
 
+  const isGameplayView = activeView === 'play' || activeView === 'daily' || activeView === 'challenge';
+
   return (
-    <div className={`gy-app-root ${settings.animationsEnabled ? 'animations-enabled' : 'animations-disabled'}`}>
+    <div
+      className={`gy-app-root ${settings.animationsEnabled ? 'animations-enabled' : 'animations-disabled'} view-${activeView} ${
+        isGameplayView ? 'is-gameplay-view' : ''
+      }`}
+    >
       {/* Toast Feedback Notification */}
       <Toast toast={toast} onDismiss={handleDismissToast} />
 
@@ -1040,7 +1046,10 @@ export const App: React.FC = () => {
       </main>
 
       {/* Brand Footer Dedicated to Govind Yadav */}
-      <footer className="gy-footer" role="contentinfo">
+      <footer
+        className={`gy-footer ${isGameplayView ? 'gy-footer-gameplay' : ''}`}
+        role="contentinfo"
+      >
         <div className="footer-content">
           <div className="footer-brand">
             <strong>GY Puzzles</strong> • THINK • SOLVE • GROW
